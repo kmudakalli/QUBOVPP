@@ -7,48 +7,28 @@ Refer to QUBOFinalSlides.pdf for a detailed explanation
 This code demonstrates how to represent complex valued precoding with integer perturbations as a binary optimization problem suitable for quantum or classical annealing solvers.
 ---
 
-## File Overview
-
 ### 1. `encoding.py`
-This module handles **integer-to-binary encoding** using two's complement representation.
+Handles **integer-to-binary encoding** using two's complement representation.
 
-- **`complex_to_real(M)`**  
+- **complex_to_real(M)**  
   Converts complex vectors or matrices into their real-valued equivalents by stacking real and imaginary parts.  
 
-- **`build_integer_encoding(n_vars, t)`**  
+- **build_integer_encoding(n_vars, t) **
   builds a binary encoding matrix C for integer variables using t magnitude bits (total t+1 bits per variable).  
   also returns a decode function to map binary vectors back to integer values.  
 
 ---
 
 ### 2. `vpp.py`
-This module defines the Vector Perturbation Precoding (VPP) problem in both its complex and realified forms.
+Defines the Vector Perturbation Precoding (VPP) problem in both its complex and realified forms.
 
-- Constructs the channel, user symbols, and precoding matrix.  
-- Converts complex-valued models to real form using `complex_to_real` from `encoding.py`.  
-- Defines:
-  \[
-  E(v) = \|F(y + \tau v)\|_2^2
-  \]
-  where \( F = \Phi(P) \), \( y = \phi(u) \), and \( G = F^T F \).  
-- Provides a function to build the equivalent QUBO matrix:
-  \[
-  Q = \tau^2 C^T G C + 2\tau C^T G y
-  \]
-  and a scalar offset term.
 ---
 
 ### 3. `vpp_qubo_example.py`
-This is the demo script which ties everything together.
+Demo script which ties everything together.
 
-It:
-1. Creates example MIMO channels and user symbols.
-2. Runs the VPP-to-QUBO conversion using vpp.py.
-3. Evaluates the energy both directly and through the QUBO form.
-4. Compares results to confirm that:
-   - The QUBO energy matches the direct energy.
-   - The decoded perturbation vector is consistent.
-   - Prints all matrices, offsets, and verification outcomes.
+
+
 
 Sample output: 
 
