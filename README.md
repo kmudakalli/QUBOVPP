@@ -11,21 +11,21 @@ This code demonstrates how to represent complex valued precoding with integer pe
 Handles **integer-to-binary encoding** using two's complement representation.
 
 - **complex_to_real(M)**  
-  Converts complex vectors or matrices into their real-valued equivalents by stacking real and imaginary parts.  
+  converts complex vectors or matrices into their real-valued equivalents by stacking real and imaginary parts.  
 
-- **build_integer_encoding(n_vars, t) **
+- **build_integer_encoding(n_vars, t)**
   builds a binary encoding matrix C for integer variables using t magnitude bits (total t+1 bits per variable).  
   also returns a decode function to map binary vectors back to integer values.  
 
 ---
 
 ### 2. `vpp.py`
-Defines the Vector Perturbation Precoding (VPP) problem in both its complex and realified forms.
+defines the Vector Perturbation Precoding (VPP) problem in both its complex and realified forms.
 
 ---
 
 ### 3. `vpp_qubo_example.py`
-Demo script which ties everything together.
+demo script which ties everything together.
 
 
 
