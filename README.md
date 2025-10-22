@@ -9,7 +9,7 @@ This code demonstrates how to represent complex valued precoding with integer pe
 
 ## File Overview
 
-1. `encoding.py`
+### 1. `encoding.py`
 This module handles **integer-to-binary encoding** using two's complement representation.
 
 - **`complex_to_real(M)`**  
