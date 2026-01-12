@@ -1,38 +1,159 @@
-# Vector Perturbation Precoding via QUBO (PySA)
+# Vector Perturbation Precoding (VPP) via QUBO — Current Implementation
 
-This repository implements and analyzes **Vector Perturbation Precoding (VPP)** for downlink multi-user MIMO using a **QUBO (Quadratic Unconstrained Binary Optimization)** formulation.  
-The focus is on understanding the role of the **spacing parameter τ (tau)**, the **structure of the QUBO matrix**, and the **bit-error-rate (BER) performance** compared with conventional baselines.
+This repository contains an experimental implementation of **downlink multi-user Vector Perturbation Precoding (VPP)**, its formulation as a **QUBO**, and numerical evaluation using both combinatorial optimization and conventional communication metrics.
 
-The work is motivated by discussions on whether QUBO-based VPP behaves similarly to conventional VPP and MIMO detection, especially for **QPSK**.
+The focus is on understanding:
+- how the **QUBO structure** changes with the spacing parameter τ,
+- how difficult the resulting QUBO is to solve,
+- and how τ affects **bit-error rate (BER)** at the receiver.
 
----
-
-## Implemented Components
-
-### 1. QUBO Construction for VPP
-- Downlink MU-MIMO system with ZF precoding.
-- VPP perturbation vector  
-  \[
-  \mathbf{v} \in \mathbb{Z}[j]^K
-  \]
-  with
-  \[
-  \Re(v_k), \Im(v_k) \in \{-1,0,1\}
-  \]
-- Each real and imaginary component is encoded using **two binary variables**, resulting in:
-  - 4 binary variables per user
-  - 16 binary variables total for a 4×4 system
-- This produces a **16×16 QUBO matrix**.
-
-Scripts:
-- `qubo_from_vpp(...)`
-- `run_vpp_qubo_visualization.py`
+The code is written for clarity and research exploration rather than efficiency.
 
 ---
 
-### 2. QUBO Structure Visualization
-To understand why QPSK VPP is harder than MIMO detection, the QUBO matrix is visualized using heatmaps.
+## System model
 
-Two normalizations are used:
+- Downlink MU-MIMO system
+- Number of users: `Nr = 4`
+- Number of transmit antennas: `Nt = 4`
+- Modulation: **QPSK** (and comparison with 16QAM)
+- Channel model: i.i.d. Rayleigh fading
+- Precoding: **Zero-Forcing (ZF)**
 
-#### (a) Global Normalized Heatmap
+The received signal model is
+\[
+\mathbf{y} = \mathbf{H}\mathbf{x} + \mathbf{n}
+\]
+
+with ZF precoding
+\[
+\mathbf{x} = \frac{\mathbf{P}(\mathbf{u} + \tau \mathbf{v})}{\|\mathbf{P}(\mathbf{u} + \tau \mathbf{v})\|}
+\quad\text{where}\quad
+\mathbf{P} = \mathbf{H}^\dagger
+\]
+
+---
+
+## Vector Perturbation Precoding (VPP)
+
+- The perturbation vector  
+  \[
+  \mathbf{v} \in \mathbb{Z}^N + j\,\mathbb{Z}^N
+  \]
+  is chosen to **minimize transmit power**.
+- In practice, each real/imaginary component is restricted to  
+  \[
+  \{-1, 0, 1\}
+  \]
+- For QPSK, the conventional spacing is
+  \[
+  \tau = 4
+  \]
+
+---
+
+## QUBO formulation
+
+### Variable count
+- 4 users → 4 complex perturbation entries
+- Real + imaginary parts → 8 integer variables
+- Each integer encoded with **2 binary variables**
+- Total QUBO variables: **16**
+- QUBO matrix size: **16 × 16**
+
+### Encoding `{−1,0,1}` with 2 bits
+Two bits give four states, but only three are used:
+- Valid states represent −1, 0, +1
+- The remaining state is **energetically penalized**
+- During optimization, invalid combinations are automatically avoided
+
+---
+
+## QUBO visualization
+
+Two types of heatmaps are generated:
+
+### 1. Global normalization
+- Plot `|Q| / max(|Q|)`
+- Shows **relative strength of all coefficients**
+- Diagonal entries correspond to **linear terms**
+- Off-diagonal entries correspond to **quadratic couplings**
+
+### 2. Off-diagonal global normalization
+- Diagonal entries set to zero
+- Plot `|Q_ij| / max(|Q|)` for `i ≠ j`
+- Highlights **coupling structure only**
+
+### Diagonal vs off-diagonal metrics
+For each QUBO:
+- `max_diag`
+- `max_offdiag`
+- `ratio_max_off_to_diag`
+- `ratio_mean_off_to_diag`
+
+These quantify how strongly coupled the problem is.
+
+---
+
+## Observed QUBO behavior
+
+### QPSK MIMO detection (baseline)
+- Strong diagonal dominance
+- Off-diagonal terms much weaker
+- Typical `max_off / max_diag ≈ 0.27`
+
+### VPP-QPSK
+As τ increases, coupling strength increases:
+- τ = 4 → ratio ≈ 0.72
+- τ = 8 → ratio ≈ 0.84
+- τ = 12 → ratio ≈ 0.89
+
+This shows that **VPP-QPSK QUBOs are significantly more coupled** than standard QPSK detection.
+
+### VPP-16QAM
+- Off-diagonal dominance is even stronger
+- Confirms that higher-order constellations produce harder QUBOs
+
+---
+
+## Solver experiments
+
+### Hit-rate vs τ (QUBO ground state)
+- Small τ → very low hit rate
+- Large τ → near-perfect hit rate
+
+This shows that large τ simplifies the optimization landscape but does not guarantee good communication performance.
+
+---
+
+## BER simulation (user-side)
+
+### Receiver processing
+1. Undo power normalization
+2. Apply modulo-τ operation
+3. Nearest-neighbor slicing
+
+### BER trends observed
+- τ = 1, 2 → BER ≈ 0.5 (random guessing)
+- τ = 4 → sharp BER decay with SNR
+- τ = 8, 12 → good BER, diminishing returns
+
+Very small τ can cause **near-zero transmit power**, leading to numerical instability. These cases are skipped safely.
+
+---
+
+## Baseline comparison
+A reference **ZF-only (no VPP)** BER curve is included for comparison. This allows direct evaluation of the gain provided by VPP.
+
+---
+
+## Runtime notes
+- QUBO visualization: seconds
+- Hit-rate sweeps: minutes
+- BER sweeps (brute-force VPP baseline): **tens of minutes** on an Apple M2 Pro
+
+---
+
+## Status
+This repository reflects an active research prototype. The implementation prioritizes transparency and interpretability of results over speed.
+
