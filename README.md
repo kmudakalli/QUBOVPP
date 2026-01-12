@@ -15,9 +15,9 @@ Related optimization and formulation techniques are informed by earlier work on 
 - [M. Kim et al., *Physics-Inspired Heuristics for Soft MIMO Detection in 5G New Radio and Beyond*, MobiCom 2021.](3447993.3448619.pdf)
 
 The current focus is on:
-- the role of the spacing parameter τ (tau),
-- the resulting **QUBO matrix structure and coupling strength**,
-- and **bit-error-rate (BER)** performance compared with conventional zero-forcing and non-VPP baselines.
+- the role of the spacing parameter τ (tau)
+- the resulting **QUBO matrix structure and coupling strength**
+- and **bit-error-rate (BER)** performance compared with conventional zero-forcing and non-VPP baselines
 ---
 
 See [QUBOSlides](QUBOSlides.pdf) for more details
