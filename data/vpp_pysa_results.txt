@@ -1,0 +1,10 @@
+SA best temperature: 0.0001
+Best PT params: Tmin=0.0002, Tmax=0.03, P_raw=0.00%
+Final PT raw hit rate: 0.00%
+Final PT polished hit rate: 0.00%
+Best raw energy: -21.34430545
+Best total energy: 34.20776809
+Best polished raw energy: -22.88115135
+Best polished total energy: 32.67092218
+Decoded l* (final PT): [-1  0  0  0  1  0  0  0]
+Decoded l* (polished): [-1  0  0  0 -1  0  1  0]
