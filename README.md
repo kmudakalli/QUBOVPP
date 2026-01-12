@@ -6,4 +6,4 @@ The focus is on understanding the role of the **spacing parameter τ (tau)**, th
 The work is motivated by discussions on whether QUBO-based VPP behaves similarly to conventional VPP and MIMO detection, especially for **QPSK**.
 ---
 
-See [QUBOSlides](QUBOSlides)
+See [QUBOSlides](QUBOSlides.pdf) for all explanations
