@@ -14,7 +14,7 @@ Related optimization and formulation techniques are informed by earlier work on 
 - [M. Kim et al., *Leveraging Quantum Annealing for Large MIMO Processing in Centralized Radio Access Networks*, SIGCOMM 2019.](3341302.3342072.pdf)
 - [M. Kim et al., *Physics-Inspired Heuristics for Soft MIMO Detection in 5G New Radio and Beyond*, MobiCom 2021.](3447993.3448619.pdf)
 
-The current focus of this repository is on:
+The current focus is on:
 - the role of the spacing parameter τ (tau),
 - the resulting **QUBO matrix structure and coupling strength**,
 - and **bit-error-rate (BER)** performance compared with conventional zero-forcing and non-VPP baselines.
